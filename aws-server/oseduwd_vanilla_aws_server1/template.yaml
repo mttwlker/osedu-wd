@@ -1,0 +1,127 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  msc-msc-osedu-server3
+
+  Sample SAM Template for msc-msc-osedu-server3
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+
+Resources:
+  PYmdUpload:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      CodeUri: source/handlers/
+      Handler: osedu-py-mdupload.lambda_handler
+      Runtime: python3.9
+      #FunctionName: myGitHubUploaderFunction
+      Timeout: 30
+      MemorySize: 256
+      #Role: arn:aws:iam::838509212767:role/PYmdUploadRole
+      Environment:
+        Variables:
+          GITHUB_TOKEN: "REDACTED"
+      Events:
+        MyEvent:
+          Type: Api
+          Properties:
+            Path: /upload
+            Method: post
+
+  
+  PYsitemap:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      CodeUri: source/handlers/
+      Handler: osedu-py-sitemap-create.lambda_handler
+      Runtime: python3.9
+      #FunctionName: myGitHubUploaderFunction
+      Timeout: 30
+      MemorySize: 256
+      #Role: arn:aws:iam::838509212767:role/PYmdUploadRole
+      Environment:
+        Variables:
+          GITHUB_TOKEN: "REDACTED"
+      Events:
+        MyEvent:
+          Type: Api
+          Properties:
+            Path: /sitemap
+            Method: post
+
+  # PYpdfgenerate:
+  #   Type: "AWS::Serverless::Function"
+  #   Properties:
+  #     CodeUri: beta/
+  #     Handler: osedu-pdf-maker.lambda_handler
+  #     Runtime: python3.9
+  #     #FunctionName: myGitHubUploaderFunction
+  #     Timeout: 30
+  #     MemorySize: 256
+  #     #Role: arn:aws:iam::838509212767:role/PYmdUploadRole
+  #     # Environment:
+  #     #   Variables:
+  #     #     GITHUB_TOKEN: "REDACTED"
+  #     Events:
+  #       MyEvent:
+  #         Type: Api
+  #         Properties:
+  #           Path: /pdfgenerate
+  #           Method: get
+
+
+  
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  HelloWorldApi:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+  HelloWorldFunction:
+    Description: "Hello World Lambda Function ARN"
+    Value: !GetAtt HelloWorldFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: "Implicit IAM Role created for Hello World function"
+    Value: !GetAtt HelloWorldFunctionRole.Arn
+  
+  
+  PYmdUploadApi:
+    Description: "API Gateway endpoint URL for Prod stage for Python Md Uploader"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/upload/"
+  PYmdUpload:
+    Description: "python md uploader function"
+    Value: !GetAtt PYmdUpload.Arn
+  PYmdUploadIamRole:
+    Description: "iam role for python md uploader function"
+    Value: !GetAtt PYmdUploadRole.Arn
+
+  
+  PYsitemapApi:
+    Description: "API Gateway endpoint URL for Prod stage for Python sitemap generator"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/sitemap/"
+  PYsitemap:
+    Description: "python sitemap generator function"
+    Value: !GetAtt PYsitemap.Arn
+  PYsitemapIamRole:
+    Description: "iam role for python sitemap function"
+    Value: !GetAtt PYsitemapRole.Arn
+
+  
+  # PYpdfgenerateApi:
+  #   Description: "API Gateway endpoint URL for Prod stage for Python pdf generator"
+  #   Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/pdfgenerate/"
+  # PYpdfgenerate:
+  #   Description: "python pdf generator function"
+  #   Value: !GetAtt PYpdfgenerate.Arn
+  # PYpdfgenerateIamRole:
+  #   Description: "iam role for python pdf function"
+  #   Value: !GetAtt PYpdfgenerateRole.Arn
+
+
+  
